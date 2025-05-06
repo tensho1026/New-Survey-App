@@ -1,17 +1,17 @@
 "use client";
 
-
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CreatePollInput, createPollSchema } from "@/lib/poll";
+import { useUser } from "@clerk/nextjs";
 
 function CreatePoll() {
-  // const [options, setOptions] = useState(["", ""]);
-
+  const { user } = useUser();
   const {
     register,
     handleSubmit,
     control,
+    reset,
     formState: { errors },
   } = useForm<CreatePollInput>({
     resolver: zodResolver(createPollSchema),
@@ -29,6 +29,17 @@ function CreatePoll() {
 
   const onSubmit = async (data: CreatePollInput) => {
     // ここで投票作成のロジックを実装（APIリクエストなど）
+    await fetch("/api/create-poll", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        ...data,
+        clerkId: user?.id,
+      }),
+    });
+    reset()
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
