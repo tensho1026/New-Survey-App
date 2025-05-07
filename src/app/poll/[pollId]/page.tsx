@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 
 export default function PollPage() {
   const [pollData, setPollData] = useState<PollData>({
+    pollId: "",
     title: "",
     description: "",
     choices: [],
@@ -31,8 +32,8 @@ export default function PollPage() {
       <h1 className='text-3xl font-bold text-center mb-8'>投票ページ</h1>
 
       <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
-        {/* <div className='order-2 lg:order-1'> */}
-        {/* <PollGraph
+        {/* <div className='order-2 lg:order-1'>
+          <PollGraph
             title={pollData.title}
             options={pollData.options}
             selectedOption={selectedOption}
@@ -41,9 +42,10 @@ export default function PollPage() {
 
         <div className='order-1 lg:order-2'>
           <PollForm
+            pollId={pollId}
             title={pollData.title}
             description={pollData.description}
-            options={pollData.choices.map((c) => ({
+            choices={pollData.choices.map((c) => ({
               ...c,
               votes: 0,
             }))}
