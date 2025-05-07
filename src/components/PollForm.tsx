@@ -12,29 +12,38 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { PollProps } from "@/types/poll";
+import { PollData } from "@/types/poll";
+import { useUser } from "@clerk/nextjs";
 
 export default function PollForm({
+  pollId,
   title,
   description,
-  options,
-  onVoteSubmit,
-}: PollProps) {
-  const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  choices,
+}: PollData) {
   const [hasVoted, setHasVoted] = useState(false);
+  const [selectedOption, setSelectedOption] = useState<string | null>(null);
 
-  const handleVote = () => {
-    if (!selectedOption) return;
-    if (onVoteSubmit) {
-      onVoteSubmit(selectedOption);
-    }
+  const { user } = useUser();
+
+  const handleSubmit = async () => {
+    await fetch(`/api/create-vote/${pollId}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        pollId,
+        choiceId: selectedOption,
+        userId: user?.id,
+      }),
+    });
+
     setHasVoted(true);
   };
 
   return (
-    <Card className="w-full">
+    <Card className='w-full'>
       <CardHeader>
-        <CardTitle className="text-2xl">{title}</CardTitle>
+        <CardTitle className='text-2xl'>{title}</CardTitle>
         <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardContent>
@@ -42,33 +51,33 @@ export default function PollForm({
           <RadioGroup
             value={selectedOption || ""}
             onValueChange={setSelectedOption}
-            className="space-y-3"
+            className='space-y-3'
           >
-            {options.map((option) => (
+            {choices.map((choice) => (
               <div
-                key={option.id}
+                key={choice.id}
                 className={`flex items-center space-x-2 rounded-lg border p-4 transition-colors ${
-                  selectedOption === option.id
+                  selectedOption === choice.id
                     ? "border-primary bg-primary/5"
                     : ""
                 }`}
               >
                 <RadioGroupItem
-                  value={option.id}
-                  id={option.id}
-                  className="mr-2"
+                  value={choice.id}
+                  id={choice.id}
+                  className='mr-2'
                 />
                 <Label
-                  htmlFor={option.id}
-                  className="flex-grow cursor-pointer font-medium"
+                  htmlFor={choice.id}
+                  className='flex-grow cursor-pointer font-medium'
                 >
-                  {option.text}
+                  {choice.text}
                 </Label>
               </div>
             ))}
           </RadioGroup>
         ) : (
-          <p className="text-center text-muted-foreground py-4">
+          <p className='text-center text-muted-foreground py-4'>
             投票ありがとうございました！
           </p>
         )}
@@ -76,21 +85,13 @@ export default function PollForm({
       <CardFooter>
         {!hasVoted ? (
           <Button
-            onClick={handleVote}
             disabled={!selectedOption}
-            className="w-full"
+            className='w-full'
+            onClick={() => handleSubmit()}
           >
             投票する
           </Button>
-        ) : (
-          <Button
-            variant="outline"
-            onClick={() => setHasVoted(false)}
-            className="w-full"
-          >
-            戻る
-          </Button>
-        )}
+        ) : null}
       </CardFooter>
     </Card>
   );

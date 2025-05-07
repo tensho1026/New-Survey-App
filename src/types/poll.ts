@@ -12,6 +12,7 @@ export type Poll = {
   }[];
 };
 export type PollData = {
+  pollId:string
   title: string;
   description: string;
   choices: {
@@ -20,13 +21,3 @@ export type PollData = {
   }[];
 };
 
-export type PollProps = {
-  title: string;
-  description: string;
-  options: {
-    id: string;
-    text: string;
-    votes?: number;
-  }[];
-  onVoteSubmit?: (optionId: string) => void;
-};
