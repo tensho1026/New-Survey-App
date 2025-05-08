@@ -1,3 +1,4 @@
+import { Choice } from "@/types/choice";
 import {
   ResponsiveContainer,
   BarChart,
@@ -8,30 +9,17 @@ import {
   Cell,
 } from "recharts";
 
-type Choice = {
-  id: string;
-  text: string;
-  _count: {
-    votes: number;
-  };
-};
-
 type PollGraphProps = {
   title: string;
   choices: Choice[];
-  selectedOption: string | null;
+  totalVotes: number;
 };
 
 export default function PollGraph({
   title,
   choices,
-  selectedOption,
+  totalVotes,
 }: PollGraphProps) {
-  const totalVotes = choices.reduce(
-    (sum, choice) => sum + choice._count.votes,
-    0
-  );
-
   const chartData = choices.map((choice) => ({
     id: choice.id,
     name: choice.text,
@@ -72,11 +60,7 @@ export default function PollGraph({
             />
             <Bar dataKey='votes' radius={[4, 4, 0, 0]} fill='#8884d8'>
               {chartData.map((entry, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  stroke={entry.id === selectedOption ? "#000" : "none"}
-                  strokeWidth={2}
-                />
+                <Cell key={`cell-${index}`} />
               ))}
             </Bar>
           </BarChart>
