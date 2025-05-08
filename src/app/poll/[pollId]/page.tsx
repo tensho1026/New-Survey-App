@@ -1,10 +1,11 @@
 "use client";
 
 import PollForm from "@/components/PollForm";
+import PollGraph from "@/components/PollGraph";
 import { PollData } from "@/types/poll";
-// import PollGraph from "@/components/PollGraph";
+
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export default function PollPage() {
   const [pollData, setPollData] = useState<PollData>({
@@ -17,38 +18,36 @@ export default function PollPage() {
   const params = useParams();
   const pollId = params?.pollId as string;
 
-  useEffect(() => {
-    const fetchPoll = async () => {
-      const res = await fetch(`/api/getPoll/${pollId}`);
-      const data = await res.json();
-      console.log(data);
-      setPollData(data);
-    };
-    fetchPoll();
+  const fetchPoll = useCallback(async () => {
+    const res = await fetch(`/api/getPoll/${pollId}`);
+    const data = await res.json();
+    setPollData(data);
   }, [pollId]);
+
+  useEffect(() => {
+    fetchPoll();
+  }, [fetchPoll]);
 
   return (
     <div className='container mx-auto py-12 px-4'>
       <h1 className='text-3xl font-bold text-center mb-8'>投票ページ</h1>
 
       <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
-        {/* <div className='order-2 lg:order-1'>
+        <div className='order-2 lg:order-1'>
           <PollGraph
             title={pollData.title}
-            options={pollData.options}
-            selectedOption={selectedOption}
+            choices={pollData.choices}
+            selectedOption={null}
           />
-        </div> */}
+        </div>
 
         <div className='order-1 lg:order-2'>
           <PollForm
             pollId={pollId}
             title={pollData.title}
             description={pollData.description}
-            choices={pollData.choices.map((c) => ({
-              ...c,
-              votes: 0,
-            }))}
+            choices={pollData.choices}
+            onVoted={fetchPoll}
           />
         </div>
       </div>
