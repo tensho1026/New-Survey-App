@@ -36,7 +36,7 @@ export default function PollGraph({
       </div>
 
       {/* グラフ */}
-      <div className='h-[350px]'>
+      <div className='h-[550px]'>
         <ResponsiveContainer width='100%' height='100%'>
           <BarChart
             data={chartData}

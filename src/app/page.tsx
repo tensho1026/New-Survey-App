@@ -10,6 +10,10 @@ export default function Home() {
   const { user, isLoaded, isSignedIn } = useUser();
   const [polls, setPolls] = useState<Poll[]>();
 
+  const handleDeleted = (deletedId: string) => {
+    setPolls((prev) => prev?.filter((p) => p.id !== deletedId));
+  };
+
   useEffect(() => {
     const saveUserToDatabase = async () => {
       await fetch("/api/save-user", {
@@ -59,7 +63,7 @@ export default function Home() {
         {/* 投票リスト */}
         <div className='space-y-4'>
           {polls?.map((poll) => (
-            <PollCard key={poll.id} poll={poll} />
+            <PollCard key={poll.id} poll={poll} onDeleted={handleDeleted}/>
           ))}
         </div>
       </div>
