@@ -22,8 +22,11 @@ export type PollData = {
       votes: number;
     };
   }[];
+  _count: {
+    votes: number;
+  };
 };
 
-export type PollFormProps = PollData & {
+export type PollFormProps = Omit<PollData, "_count"> & {
   onVoted?: () => void;
 };

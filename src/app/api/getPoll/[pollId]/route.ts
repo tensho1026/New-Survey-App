@@ -9,6 +9,9 @@ app.get("/api/getPoll/:pollId", async (c) => {
     where: { id: pollId },
     include: {
       choices: {
+        orderBy: {
+          createdAt: "asc",
+        },
         include: {
           _count: {
             select: { votes: true },

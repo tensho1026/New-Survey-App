@@ -16,6 +16,9 @@ export default function PollPage() {
     title: "",
     description: "",
     choices: [],
+    _count:{
+      votes:0
+    }
   });
 
   const { pollId } = useParams() as { pollId: string };
@@ -47,7 +50,7 @@ export default function PollPage() {
           <PollGraph
             title={pollData.title}
             choices={pollData.choices}
-            selectedOption={null}
+            totalVotes={pollData._count.votes}
           />
         </div>
 
