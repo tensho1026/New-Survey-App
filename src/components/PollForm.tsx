@@ -12,7 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { PollData } from "@/types/poll";
+import { PollFormProps } from "@/types/poll";
 import { useUser } from "@clerk/nextjs";
 
 export default function PollForm({
@@ -20,7 +20,8 @@ export default function PollForm({
   title,
   description,
   choices,
-}: PollData) {
+  onVoted,
+}: PollFormProps) {
   const [hasVoted, setHasVoted] = useState(false);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
 
@@ -38,6 +39,7 @@ export default function PollForm({
     });
 
     setHasVoted(true);
+    if (onVoted) onVoted();
   };
 
   return (

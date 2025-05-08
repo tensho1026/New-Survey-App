@@ -6,11 +6,19 @@ const app = new Hono();
 app.get("/api/getPoll/:pollId", async (c) => {
   const pollId = c.req.param("pollId");
   const poll = await prisma.poll.findUnique({
-    where: {
-      id: pollId,
-    },
+    where: { id: pollId },
     include: {
-      choices: true,
+      choices: {
+        include: {
+          _count: {
+            select: { votes: true },
+          },
+        },
+      },
+
+      _count: {
+        select: { votes: true },
+      },
     },
   });
   if (!poll) {

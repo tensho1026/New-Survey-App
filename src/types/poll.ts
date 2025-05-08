@@ -12,12 +12,18 @@ export type Poll = {
   }[];
 };
 export type PollData = {
-  pollId:string
+  pollId: string;
   title: string;
   description: string;
   choices: {
     id: string;
     text: string;
+    _count: {
+      votes: number;
+    };
   }[];
 };
 
+export type PollFormProps = PollData & {
+  onVoted?: () => void;
+};
