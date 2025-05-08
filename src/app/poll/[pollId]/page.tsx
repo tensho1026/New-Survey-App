@@ -2,7 +2,10 @@
 
 import PollForm from "@/components/PollForm";
 import PollGraph from "@/components/PollGraph";
+
 import { PollData } from "@/types/poll";
+import { Home } from "lucide-react";
+import Link from "next/link";
 
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
@@ -15,13 +18,15 @@ export default function PollPage() {
     choices: [],
   });
 
-  const params = useParams();
-  const pollId = params?.pollId as string;
-
+  const { pollId } = useParams() as { pollId: string };
   const fetchPoll = useCallback(async () => {
-    const res = await fetch(`/api/getPoll/${pollId}`);
-    const data = await res.json();
-    setPollData(data);
+    try {
+      const res = await fetch(`/api/getPoll/${pollId}`);
+      const data = await res.json();
+      setPollData(data);
+    } catch (error) {
+      console.error("投票データの取得に失敗しました:", error);
+    }
   }, [pollId]);
 
   useEffect(() => {
@@ -29,7 +34,12 @@ export default function PollPage() {
   }, [fetchPoll]);
 
   return (
-    <div className='container mx-auto py-12 px-4'>
+    <div className=' relative container mx-auto py-12 px-4'>
+      <div className='absolute top-10 left-12'>
+        <Link href='/'>
+          <Home size={24} />
+        </Link>
+      </div>
       <h1 className='text-3xl font-bold text-center mb-8'>投票ページ</h1>
 
       <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>

@@ -4,6 +4,8 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CreatePollInput, createPollSchema } from "@/lib/poll";
 import { useUser } from "@clerk/nextjs";
+import Link from "next/link";
+import { Home } from "lucide-react";
 
 function CreatePoll() {
   const { user } = useUser();
@@ -39,11 +41,16 @@ function CreatePoll() {
         clerkId: user?.id,
       }),
     });
-    reset()
+    reset();
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
-      <div className='max-w-2xl mx-auto py-8 px-4'>
+      <div className='max-w-2xl mx-auto py-8 px-4 relative'>
+        <div className='absolute top-10 right-12'>
+          <Link href='/'>
+            <Home size={24} />
+          </Link>
+        </div>
         <h1 className='text-2xl font-bold mb-6'>新しい投票を作成</h1>
 
         <div className='space-y-2'>
