@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -41,6 +41,20 @@ export default function PollForm({
     setHasVoted(true);
     if (onVoted) onVoted();
   };
+
+  useEffect(() => {
+    const fetchVoteStatus = async () => {
+      const res = await fetch(`/api/getPoll/${pollId}?userId=${user?.id}`);
+      const data = await res.json();
+      if (data.existingPoll) {
+        setHasVoted(true);
+      }
+    };
+  
+    if (user?.id) {
+      fetchVoteStatus();
+    }
+  }, [pollId, user?.id]);
 
   return (
     <Card className='w-full'>
