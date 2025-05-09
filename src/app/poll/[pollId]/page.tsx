@@ -4,6 +4,7 @@ import PollForm from "@/components/PollForm";
 import PollGraph from "@/components/PollGraph";
 
 import { PollData } from "@/types/poll";
+import { useUser } from "@clerk/nextjs";
 import { Home } from "lucide-react";
 import Link from "next/link";
 
@@ -16,21 +17,22 @@ export default function PollPage() {
     title: "",
     description: "",
     choices: [],
-    _count:{
-      votes:0
-    }
+    _count: {
+      votes: 0,
+    },
   });
 
   const { pollId } = useParams() as { pollId: string };
+  const { user } = useUser();
   const fetchPoll = useCallback(async () => {
     try {
-      const res = await fetch(`/api/getPoll/${pollId}`);
+      const res = await fetch(`/api/getPoll/${pollId}?userId=${user?.id}`);
       const data = await res.json();
-      setPollData(data);
+      setPollData(data.poll);
     } catch (error) {
       console.error("投票データの取得に失敗しました:", error);
     }
-  }, [pollId]);
+  }, [pollId, user?.id]);
 
   useEffect(() => {
     fetchPoll();
