@@ -9,29 +9,31 @@ app.post("/api/create-poll", async (c) => {
   const result = createPollSchema.safeParse(body);
 
   if (!result.success) {
-    console.log("❌ バリデーションエラー:", result.error.format());
-    return c.json({ error: result.error.format() }, 400);
+    return c.json(
+      { error: "Invalid input", issues: result.error.format() },
+      400
+    );
   }
 
   const { title, description, options } = result.data;
 
- 
-
-   await prisma.poll.create({
+  const createdPoll = await prisma.poll.create({
     data: {
       userId: body.clerkId,
-      title: title,
-      description: description,
+      title,
+      description,
       choices: {
         create: options.map((o) => ({
           text: o.value,
         })),
       },
-      
     },
-    
+    include: {
+      choices: true,
+    },
   });
-  
+
+  return c.json(createdPoll, 201);
 });
 
 export async function POST(req: Request) {
